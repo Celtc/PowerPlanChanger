@@ -60,9 +60,9 @@ namespace PowerPlanChanger.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap LogoMed_Alpha {
+        internal static System.Drawing.Bitmap EnergySaver {
             get {
-                object obj = ResourceManager.GetObject("LogoMed_Alpha", resourceCulture);
+                object obj = ResourceManager.GetObject("EnergySaver", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

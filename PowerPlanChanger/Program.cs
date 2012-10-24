@@ -15,7 +15,6 @@ namespace PowerPlanChanger
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LogoForm(1000, 1500));
             Application.Run(new APP());
         }
     }

@@ -145,6 +145,7 @@
             this.Controls.Add(this.button_saveOpt);
             this.Name = "OptionsGUI";
             this.Text = "Form1";
+            this.TransparencyKey = System.Drawing.Color.Lime;
             this.ResumeLayout(false);
             this.PerformLayout();
 
