@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EnergyChanger")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Power Plan Changer")]
+[assembly: AssemblyDescription("Power Plan Changer")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Celtc")]
 [assembly: AssemblyProduct("EnergyChanger")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]

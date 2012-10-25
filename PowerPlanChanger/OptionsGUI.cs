@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using PowerPlanChanger.Sources;
@@ -59,8 +58,7 @@ namespace PowerPlanChanger
                 var ans = MessageBox.Show("Not valid option selected!", "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
                 if (ans == System.Windows.Forms.DialogResult.Cancel)
                     this.Close();
-                else
-                    return;
+                return;
             }
 
             //Vuelca los GUIFields al las variables internas

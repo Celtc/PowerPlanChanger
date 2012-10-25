@@ -88,6 +88,8 @@ namespace PowerPlanChanger
             this.pictureBox_buttonPerformance.TabIndex = 3;
             this.pictureBox_buttonPerformance.TabStop = false;
             this.pictureBox_buttonPerformance.Click += new System.EventHandler(this.pictureBox_buttonPerformance_Click);
+            this.pictureBox_buttonPerformance.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_buttonPerformance_MouseDown);
+            this.pictureBox_buttonPerformance.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_buttonPerformance_MouseUp);
             // 
             // pictureBox_buttonEnergy
             // 
@@ -99,6 +101,8 @@ namespace PowerPlanChanger
             this.pictureBox_buttonEnergy.TabIndex = 4;
             this.pictureBox_buttonEnergy.TabStop = false;
             this.pictureBox_buttonEnergy.Click += new System.EventHandler(this.pictureBox_buttonEnergy_Click);
+            this.pictureBox_buttonEnergy.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_buttonEnergy_MouseDown);
+            this.pictureBox_buttonEnergy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_buttonEnergy_MouseUp);
             // 
             // APP
             // 

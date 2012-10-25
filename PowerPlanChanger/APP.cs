@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -17,6 +16,7 @@ namespace PowerPlanChanger
         System.Timers.Timer _timer;
         private PowerStatus _power;
         private BatteryChargeStatus actualChargeStatus;
+        private List<ButtonsContainer> _buttonList;
         internal int _powerChangePoint;
         internal bool _changePointOn;
         internal bool _plugCheck;
@@ -24,6 +24,14 @@ namespace PowerPlanChanger
         internal Positions _position;
         internal Guid _ecoPlan;
         internal Guid _maxPlan;
+
+        internal struct ButtonsContainer
+        {
+            public Image EnergyButtonNonPressed;
+            public Image EnergyButtonPressed;
+            public Image PerformanceButtonNonPressed;
+            public Image PerformanceButtonPressed;
+        }
 
         public enum Positions
         {
@@ -67,6 +75,7 @@ namespace PowerPlanChanger
         {
             //Inicializacion
             InitializeComponent();
+            LoadButtons();
             _power = SystemInformation.PowerStatus;
             _timer = new System.Timers.Timer();
             _timer.Enabled = false;
@@ -189,26 +198,50 @@ namespace PowerPlanChanger
         }
 
         //Buttons
-        private void SetButtonsBitmap()
+        private void LoadButtons()
         {
-            switch (this._buttonSize)
+            this._buttonList = new List<ButtonsContainer>(4);
+            for (int i = 0; i < 4; i++)
             {
-                case ButtonSizes.Large: this.pictureBox_buttonEnergy.Image = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_large;
-                                        this.pictureBox_buttonPerformance.Image = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_large;
-                    break;
+                ButtonsContainer bContainer = new ButtonsContainer();
+                switch (i)
+                {
+                    case (int)ButtonSizes.Large: 
+                        bContainer.EnergyButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_large;
+                        bContainer.PerformanceButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_large;
+                        bContainer.EnergyButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButtonPressed_large;
+                        bContainer.PerformanceButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButtonPressed_large;
+                        break;
 
-                case ButtonSizes.Medium: this.pictureBox_buttonEnergy.Image = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_medium;
-                                         this.pictureBox_buttonPerformance.Image = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_medium;
-                    break;
+                    case (int)ButtonSizes.Medium:
+                        bContainer.EnergyButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_medium;
+                        bContainer.PerformanceButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_medium;
+                        bContainer.EnergyButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButtonPressed_medium;
+                        bContainer.PerformanceButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButtonPressed_medium;
+                        break;
 
-                case ButtonSizes.Small: this.pictureBox_buttonEnergy.Image = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_small;
-                                        this.pictureBox_buttonPerformance.Image = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_small;
-                    break;
+                    case (int)ButtonSizes.Small:
+                        bContainer.EnergyButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_small;
+                        bContainer.PerformanceButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_small;
+                        bContainer.EnergyButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButtonPressed_small;
+                        bContainer.PerformanceButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButtonPressed_small;
+                        break;
 
-                case ButtonSizes.XSmall: this.pictureBox_buttonEnergy.Image = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_xsmall;
-                                         this.pictureBox_buttonPerformance.Image = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_xsmall;
-                    break;
+                    case (int)ButtonSizes.XSmall:
+                        bContainer.EnergyButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButton_xsmall;
+                        bContainer.PerformanceButtonNonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButton_xsmall;
+                        bContainer.EnergyButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.EnergyButtonPressed_xsmall;
+                        bContainer.PerformanceButtonPressed = (Image)global::PowerPlanChanger.Properties.Resources.PerformanceButtonPressed_xsmall;
+                        break;
+                }
+                this._buttonList.Add(bContainer);
             }
+        }
+
+        private void RefreshButtonsBitmap()
+        {
+            this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonNonPressed;
+            this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonNonPressed;
         }
 
         private void pictureBox_buttonPerformance_Click(object sender, EventArgs e)
@@ -217,16 +250,36 @@ namespace PowerPlanChanger
             PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
         }
 
+        private void pictureBox_buttonPerformance_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonPressed;
+        }
+
+        private void pictureBox_buttonPerformance_MouseUp(object sender, MouseEventArgs e)
+        {
+            this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonNonPressed;
+        }
+
         private void pictureBox_buttonEnergy_Click(object sender, EventArgs e)
         {
             LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
             PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
         }
 
+        private void pictureBox_buttonEnergy_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonPressed;
+        }
+
+        private void pictureBox_buttonEnergy_MouseUp(object sender, MouseEventArgs e)
+        {
+            this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonNonPressed;
+        }
+
         //Form Loading
         public void APP_Refresh()
         {
-            this.SetButtonsBitmap();
+            this.RefreshButtonsBitmap();
             this.SetPosition();
 
             if (this._plugCheck || this._changePointOn)
@@ -269,6 +322,5 @@ namespace PowerPlanChanger
                 this.actualChargeStatus = _power.BatteryChargeStatus;
             }
         }
-
     }
 }

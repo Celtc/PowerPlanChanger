@@ -60,6 +60,13 @@ namespace PowerPlanChanger.Properties {
             }
         }
         
+        internal static System.Drawing.Icon Battery {
+            get {
+                object obj = ResourceManager.GetObject("Battery", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap EnergyButton_large {
             get {
                 object obj = ResourceManager.GetObject("EnergyButton_large", resourceCulture);
@@ -84,6 +91,34 @@ namespace PowerPlanChanger.Properties {
         internal static System.Drawing.Bitmap EnergyButton_xsmall {
             get {
                 object obj = ResourceManager.GetObject("EnergyButton_xsmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButtonPressed_large {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButtonPressed_large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButtonPressed_medium {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButtonPressed_medium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButtonPressed_small {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButtonPressed_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButtonPressed_xsmall {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButtonPressed_xsmall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -126,6 +161,34 @@ namespace PowerPlanChanger.Properties {
         internal static System.Drawing.Bitmap PerformanceButton_xsmall {
             get {
                 object obj = ResourceManager.GetObject("PerformanceButton_xsmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButtonPressed_large {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButtonPressed_large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButtonPressed_medium {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButtonPressed_medium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButtonPressed_small {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButtonPressed_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButtonPressed_xsmall {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButtonPressed_xsmall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

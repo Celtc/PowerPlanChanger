@@ -9,9 +9,10 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PowerPlanChanger</RootNamespace>
-    <AssemblyName>EnergyChanger</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <AssemblyName>PowerPlanChanger</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -33,12 +34,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Battery.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -84,6 +84,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,6 +124,33 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EnergyButton_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Battery.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButtonPressed_xsmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButtonPressed_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButtonPressed_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButtonPressed_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButtonPressed_xsmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButtonPressed_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButtonPressed_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButtonPressed_small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
