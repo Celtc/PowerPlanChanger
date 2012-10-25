@@ -95,10 +95,34 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LogoMed_Alpha.png" />
+    <None Include="Resources\EnergySaver.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\EnergySaver.png" />
+    <None Include="Resources\PerformanceBattery.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButton_xsmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButton_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButton_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButton_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PerformanceButton_xsmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButton_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButton_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EnergyButton_small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

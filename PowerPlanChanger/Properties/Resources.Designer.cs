@@ -60,9 +60,72 @@ namespace PowerPlanChanger.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap EnergyButton_large {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButton_large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButton_medium {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButton_medium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButton_small {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButton_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap EnergyButton_xsmall {
+            get {
+                object obj = ResourceManager.GetObject("EnergyButton_xsmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap EnergySaver {
             get {
                 object obj = ResourceManager.GetObject("EnergySaver", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceBattery {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceBattery", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButton_large {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButton_large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButton_medium {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButton_medium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButton_small {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButton_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PerformanceButton_xsmall {
+            get {
+                object obj = ResourceManager.GetObject("PerformanceButton_xsmall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

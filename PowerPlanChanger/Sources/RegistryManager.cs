@@ -60,8 +60,11 @@ namespace PowerPlanChanger.Sources
                 //Agrega los atributos
                 key.SetValue("EcoPlan", "00000000-0000-0000-0000-000000000000");
                 key.SetValue("MaxPlan", "00000000-0000-0000-0000-000000000000");
+                key.SetValue("PlugCheck", "False");
                 key.SetValue("ChangePointOn", "False");
                 key.SetValue("PowerChangePoint", "30");
+                key.SetValue("Position", "1");
+                key.SetValue("ButtonSize", "2");
             }
             catch
             {
@@ -94,7 +97,10 @@ namespace PowerPlanChanger.Sources
                 try
                 {
                     caller.PowerChangePoint = (key.GetValue("PowerChangePoint").ToString());
+                    caller.PlugCheck = (key.GetValue("PlugCheck").ToString());
                     caller.ChangePointOn = (key.GetValue("ChangePointOn").ToString());
+                    caller.ButtonSize = (key.GetValue("ButtonSize").ToString());
+                    caller.Position = (key.GetValue("Position").ToString());
                     caller.EcoPlan = (key.GetValue("EcoPlan").ToString());
                     caller.MaxPlan = (key.GetValue("MaxPlan").ToString());
                 }
