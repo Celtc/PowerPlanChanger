@@ -58,14 +58,181 @@ namespace PowerPlanChanger
         [DllImportAttribute("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
         public static extern bool ReleaseCapture();
 
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+        /// <summary>
+        /// Win32 API imports.
+        /// </summary>
+        private static class NativeMethods
+        {
+            /// <summary>
+            /// The action completed successfully.
+            /// </summary>
+            internal const int ERROR_SUCCESS = 0x0;
 
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpWindowClass, string lpWindowName);
+            /// <summary>
+            /// The WM_COMMAND message is sent when the user selects a command item from a menu, when a control sends a notification message to
+            /// its parent window, or when an accelerator keystroke is translated. 
+            /// </summary>
+            internal const uint WM_COMMAND = 0x111;
 
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+            /// <summary>
+            /// Delegate used to call <code>EnumWindowsProc</code>.
+            /// </summary>
+            /// <param name="handle">Handle received during window enumeration.</param>
+            /// <param name="param">Parameter passed to <code>EnumWindowsProc</code>; not used in this application.</param>
+            /// <returns>1 to continue windows enumeration; 0 otherwise.</returns>
+            public delegate int EnumWindowsProcDelegate(IntPtr handle, int param);
+
+            /// <summary>
+            /// The behavior of the SendMessageTimeout. This parameter can be one or more of the following values.
+            /// </summary>
+            [Flags]
+            internal enum SendMessageTimeoutFlags : uint
+            {
+                /// <summary>
+                /// The calling thread is not prevented from processing other requests while waiting for the function to return.
+                /// </summary>
+                SMTO_NORMAL = 0x0,
+
+                /// <summary>
+                /// Prevents the calling thread from processing any other requests until the function returns.
+                /// </summary>
+                SMTO_BLOCK = 0x1,
+
+                /// <summary>
+                /// The function returns without waiting for the time-out period to elapse if the receiving thread appears to not respond or
+                /// "hangs."
+                /// </summary>
+                SMTO_ABORTIFHUNG = 0x2,
+
+                /// <summary>
+                /// The function does not enforce the time-out period as long as the receiving thread is processing messages.
+                /// </summary>
+                SMTO_NOTIMEOUTIFNOTHUNG = 0x8
+            }
+
+            [DllImport("user32.dll")]
+            internal static extern int EnumWindows(EnumWindowsProcDelegate lpEnumFunc, IntPtr lParam);
+
+            [DllImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool EnumDesktopWindows(IntPtr hDesktop, EnumWindowsProcDelegate lpEnumFunc, IntPtr lParam);
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            internal static extern IntPtr FindWindow(
+                string lpWindowClass,
+                string lpWindowName);
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            internal static extern IntPtr FindWindowEx(
+                IntPtr hwndParent,
+                IntPtr hwndChildAfter,
+                [MarshalAs(UnmanagedType.LPWStr)]string lpszClass,
+                [MarshalAs(UnmanagedType.LPWStr)]string lpszWindow);
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            internal static extern IntPtr SendMessageTimeout(
+                IntPtr hWnd,
+                uint Msg,
+                IntPtr wParam,
+                IntPtr lParam,
+                SendMessageTimeoutFlags fuFlags,
+                uint uTimeout,
+                out UIntPtr lpdwResult);
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            internal static extern int SetWindowLong(
+                IntPtr hWnd, int nIndex,
+                IntPtr dwNewLong);
+        }
+
+        internal static IntPtr shellWindowHandle;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "All exceptions are caught to prevent enumeration stop")]
+        private static int EnumWindowsProc(IntPtr handle, int param)
+        {
+            try
+            {
+                IntPtr foundHandle = NativeMethods.FindWindowEx(handle, IntPtr.Zero, "SHELLDLL_DefView", null);
+                if (!foundHandle.Equals(IntPtr.Zero))
+                {
+                    shellWindowHandle = foundHandle;
+                    return 0;
+                }
+            }
+            catch { }
+
+            return 1;
+        }
+
+        private static IntPtr FindShellWindow()
+        {
+            IntPtr progmanHandle;
+            IntPtr defaultViewHandle = IntPtr.Zero;
+            IntPtr workerWHandle;
+            int errorCode = NativeMethods.ERROR_SUCCESS;
+
+            // Try "SHELLDLL_DefView" as a child window of "Progman".
+            progmanHandle = NativeMethods.FindWindowEx(IntPtr.Zero, IntPtr.Zero, "Progman", null);
+            if (!progmanHandle.Equals(IntPtr.Zero))
+            {
+                defaultViewHandle = NativeMethods.FindWindowEx(progmanHandle, IntPtr.Zero, "SHELLDLL_DefView", null);
+                errorCode = Marshal.GetLastWin32Error();
+            }
+
+            if (!defaultViewHandle.Equals(IntPtr.Zero))
+            {
+                return defaultViewHandle;
+            }
+            else if (errorCode != NativeMethods.ERROR_SUCCESS)
+            {
+                Marshal.ThrowExceptionForHR(errorCode);
+            }
+
+            // Try "SHELLDLL_DefView" as a child of "WorkerW".
+            errorCode = NativeMethods.ERROR_SUCCESS;
+            workerWHandle = NativeMethods.FindWindowEx(IntPtr.Zero, IntPtr.Zero, "WorkerW", null);
+
+            if (!workerWHandle.Equals(IntPtr.Zero))
+            {
+                defaultViewHandle = NativeMethods.FindWindowEx(workerWHandle, IntPtr.Zero, "SHELLDLL_DefView", null);
+                errorCode = Marshal.GetLastWin32Error();
+            }
+
+            if (!defaultViewHandle.Equals(IntPtr.Zero))
+            {
+                return defaultViewHandle;
+            }
+            else if (errorCode != NativeMethods.ERROR_SUCCESS)
+            {
+                Marshal.ThrowExceptionForHR(errorCode);
+            }
+
+            // Try "SHELLDLL_DefView" as a child or a child of "Progman".
+            shellWindowHandle = IntPtr.Zero;
+            if (NativeMethods.EnumWindows(EnumWindowsProc, progmanHandle) == 0)
+            {
+                errorCode = Marshal.GetLastWin32Error();
+                if (errorCode != NativeMethods.ERROR_SUCCESS)
+                {
+                    Marshal.ThrowExceptionForHR(errorCode);
+                }
+            }
+
+            // Try "SHELLDLL_DefView" as if were in another desktop.
+            if (shellWindowHandle.Equals(IntPtr.Zero))
+            {
+                if (NativeMethods.EnumDesktopWindows(IntPtr.Zero, EnumWindowsProc, progmanHandle))
+                {
+                    errorCode = Marshal.GetLastWin32Error();
+                    if (errorCode != NativeMethods.ERROR_SUCCESS)
+                    {
+                        Marshal.ThrowExceptionForHR(errorCode);
+                    }
+                }
+            }
+
+            return shellWindowHandle;
+        }
 
         const int GWL_HWNDPARENT = -8;
         #endregion
@@ -81,12 +248,12 @@ namespace PowerPlanChanger
             _timer.Enabled = false;
 
             //Posicion inicial
-            this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.Manual;
             this.FormBorderStyle = FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.ControlBox = false;
+            this.ShowInTaskbar = false;
 
             //Carga de valores
             RegistryManager.LoadConfig(this, "SOFTWARE\\PowerPlanChanger");
@@ -292,22 +459,28 @@ namespace PowerPlanChanger
 
         private void APP_Load(object sender, EventArgs e)
         {
-            IntPtr hprog = FindWindowEx( FindWindowEx(FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""), IntPtr.Zero, "SysListView32", "FolderView");
-            SetWindowLong(this.Handle, GWL_HWNDPARENT, hprog);
+            IntPtr hprog = NativeMethods.FindWindowEx(FindShellWindow() , IntPtr.Zero, "SysListView32", "FolderView");
+            NativeMethods.SetWindowLong(this.Handle, GWL_HWNDPARENT, hprog);
         }
 
         //Timer events
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            BatteryChargeCheck();
-            BatterPlugCheck();
+            if(this._changePointOn)
+                BatteryChargeCheck();
+
+            if(this._plugCheck)
+                BatterPlugCheck();
         }
         
         private void BatteryChargeCheck()
         {
             if( (int) (_power.BatteryLifePercent * 100) <= this._powerChangePoint)
-                if(PowerSchemeHelper.GetPowerActiveScheme() != this._ecoPlan)
-                    PowerSchemeHelper.SetPowerScheme(this._ecoPlan);
+                if (PowerSchemeHelper.GetPowerActiveScheme() != this._ecoPlan)
+                {
+                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                }
         }
 
         private void BatterPlugCheck()
@@ -315,9 +488,16 @@ namespace PowerPlanChanger
             if(_power.BatteryChargeStatus != this.actualChargeStatus)
             {
                 if (_power.BatteryChargeStatus == BatteryChargeStatus.Charging)
-                    PowerSchemeHelper.SetPowerScheme(this._ecoPlan);
-                else 
-                    PowerSchemeHelper.SetPowerScheme(this._maxPlan);
+                {
+                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
+                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+                    
+                }
+                else
+                {
+                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                }
 
                 this.actualChargeStatus = _power.BatteryChargeStatus;
             }
