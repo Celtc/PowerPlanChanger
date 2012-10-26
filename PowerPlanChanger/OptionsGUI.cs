@@ -19,6 +19,7 @@ namespace PowerPlanChanger
         {
             //Inicializacion
             InitializeComponent();
+            this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.CenterScreen;
             this._powerPlans = PowerSchemeHelper.GetAllPowerSchemas();
             this.caller = caller;
@@ -75,7 +76,7 @@ namespace PowerPlanChanger
             RegistryManager.SaveConfig("Position", caller.Position, "SOFTWARE\\PowerPlanChanger");
             RegistryManager.SaveConfig("EcoPlan", caller.EcoPlan, "SOFTWARE\\PowerPlanChanger");
             RegistryManager.SaveConfig("MaxPlan", caller.MaxPlan, "SOFTWARE\\PowerPlanChanger");
-            RegistryManager.SaveConfig("PlugCheck", caller.ChangePointOn, "SOFTWARE\\PowerPlanChanger");
+            RegistryManager.SaveConfig("PlugCheck", caller.PlugCheck, "SOFTWARE\\PowerPlanChanger");
             RegistryManager.SaveConfig("ChangePointOn", caller.ChangePointOn, "SOFTWARE\\PowerPlanChanger");
             RegistryManager.SaveConfig("PowerChangePoint", caller.PowerChangePoint, "SOFTWARE\\PowerPlanChanger");
 

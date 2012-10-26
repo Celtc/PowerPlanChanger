@@ -3,17 +3,33 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 public class LogoForm : PerPixelAlphaForm
 {
     //Builder
-    public LogoForm(int fadeTime, int showTime, Bitmap logo)
+    public LogoForm(int fadeTime, int showTime, double fps, Bitmap logo)
     {
-        this._timerCount = 0;
+        this._fps = fps;
         this.TopMost = true;
         this.ShowInTaskbar = false;
         this.bitmap = logo;
 
+        this._fadeTime = fadeTime;
+        this._showTime = showTime;
+        this.DrawLogo();
+    }
+    public LogoForm(Bitmap logo)
+    {
+        this.TopMost = true;
+        this.ShowInTaskbar = false;
+        this.bitmap = logo;
+    }
+
+    //Draw on demand
+    public void Draw(int fadeTime, int showTime, double fps)
+    {
+        this._fps = fps;
         this._fadeTime = fadeTime;
         this._showTime = showTime;
         this.DrawLogo();
@@ -34,39 +50,33 @@ public class LogoForm : PerPixelAlphaForm
     private void DrawLogo()
     {
         //Carga
-        try
-        {
-            this.SetBitmap(this.bitmap, 0);
-        }
-        catch
-        {
-        }
+        try { this.SetBitmap(this.bitmap, 0); } catch {}
 
         //Establece posicion y Muestra
         this.Show();
         this.Top = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Height / 2);
         this.Left = (Screen.PrimaryScreen.WorkingArea.Width / 2) - (this.Width / 2);
 
-        //Setea el timer
-        Timer timer = new Timer();
-        timer.Tick += new EventHandler(timer_Tick);
-        timer.Interval = (34);
-        timer.Enabled = true;                       
-        timer.Start();                      
+        //Muestra con transaperencia
+        int interval = (int) ((double) (1 / _fps) * 1000);
+        int timer = 0;
+        while (timer <= this._fadeTime)
+        {
+            this.SetBitmap(this.bitmap, (byte)(timer * 255 / this._fadeTime));
+            timer += interval;
+            Thread.Sleep(interval);
+        }
+        while (timer <= this._showTime)
+        {
+            timer += interval;
+            Thread.Sleep(interval);
+        }
+
+        //Esconde
+        this.Hide();
     }
 
-    void timer_Tick(object sender, EventArgs e)
-    {
-        Timer timer = (Timer) sender;
-        this._timerCount += timer.Interval;
-
-        if (this._timerCount <= this._fadeTime)
-            this.SetBitmap(this.bitmap, (byte)(this._timerCount * 255 / this._fadeTime));
-        else if (this._timerCount > this._showTime + this._fadeTime)
-            this.Close();
-    }
-
-    private int _timerCount;
+    private double _fps;
     private int _fadeTime;
     private int _showTime;
     private Bitmap bitmap;

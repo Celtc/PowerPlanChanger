@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using PowerPlanChanger.Sources;
 using System.Timers;
+using System.Threading;
 
 namespace PowerPlanChanger
 {
@@ -15,7 +16,7 @@ namespace PowerPlanChanger
     {
         System.Timers.Timer _timer;
         private PowerStatus _power;
-        private BatteryChargeStatus actualChargeStatus;
+        private PowerLineStatus actualLineStatus;
         private List<ButtonsContainer> _buttonList;
         internal int _powerChangePoint;
         internal bool _changePointOn;
@@ -242,10 +243,6 @@ namespace PowerPlanChanger
         {
             //Inicializacion
             InitializeComponent();
-            LoadButtons();
-            _power = SystemInformation.PowerStatus;
-            _timer = new System.Timers.Timer();
-            _timer.Enabled = false;
 
             //Posicion inicial
             this.StartPosition = FormStartPosition.Manual;
@@ -254,10 +251,6 @@ namespace PowerPlanChanger
             this.MinimizeBox = false;
             this.ControlBox = false;
             this.ShowInTaskbar = false;
-
-            //Carga de valores
-            RegistryManager.LoadConfig(this, "SOFTWARE\\PowerPlanChanger");
-            APP_Refresh();
         }
 
         #region Position Functions
@@ -413,8 +406,12 @@ namespace PowerPlanChanger
 
         private void pictureBox_buttonPerformance_Click(object sender, EventArgs e)
         {
-            LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
-            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+            try
+            {
+                LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
+                PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+            }
+            catch { }
         }
 
         private void pictureBox_buttonPerformance_MouseDown(object sender, MouseEventArgs e)
@@ -429,8 +426,12 @@ namespace PowerPlanChanger
 
         private void pictureBox_buttonEnergy_Click(object sender, EventArgs e)
         {
-            LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+            try
+            {
+                LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+            }
+            catch { }
         }
 
         private void pictureBox_buttonEnergy_MouseDown(object sender, MouseEventArgs e)
@@ -451,6 +452,7 @@ namespace PowerPlanChanger
 
             if (this._plugCheck || this._changePointOn)
             {
+                this.actualLineStatus = PowerLineStatus.Unknown;
                 _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
                 _timer.Interval = 2000;
                 _timer.Enabled = true;
@@ -459,8 +461,23 @@ namespace PowerPlanChanger
 
         private void APP_Load(object sender, EventArgs e)
         {
+            //Traslada el padre
             IntPtr hprog = NativeMethods.FindWindowEx(FindShellWindow() , IntPtr.Zero, "SysListView32", "FolderView");
             NativeMethods.SetWindowLong(this.Handle, GWL_HWNDPARENT, hprog);
+
+            //Carga los botones
+            LoadButtons();
+
+            //Carga el Timer
+            _power = SystemInformation.PowerStatus;
+            _timer = new System.Timers.Timer();
+            _timer.Enabled = false;
+
+            //Carga de valores de registro
+            RegistryManager.LoadConfig(this, "SOFTWARE\\PowerPlanChanger");
+
+            //Refresca el APP
+            APP_Refresh();
         }
 
         //Timer events
@@ -475,31 +492,51 @@ namespace PowerPlanChanger
         
         private void BatteryChargeCheck()
         {
-            if( (int) (_power.BatteryLifePercent * 100) <= this._powerChangePoint)
+            if ((int)(_power.BatteryLifePercent * 100) <= this._powerChangePoint)
+            {
                 if (PowerSchemeHelper.GetPowerActiveScheme() != this._ecoPlan)
                 {
-                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                    try
+                    {
+                        LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                        PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                    }
+                    catch { }
                 }
+            }
         }
 
         private void BatterPlugCheck()
         {
-            if(_power.BatteryChargeStatus != this.actualChargeStatus)
+            if(this.actualLineStatus != _power.PowerLineStatus)
             {
-                if (_power.BatteryChargeStatus == BatteryChargeStatus.Charging)
+                this.actualLineStatus = _power.PowerLineStatus;
+                if (_power.PowerLineStatus == PowerLineStatus.Online)
                 {
-                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
-                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
-                    
+                    if (PowerSchemeHelper.GetPowerActiveScheme() != _maxPlan)
+                    {
+                        Thread.Sleep(2000);
+                        try
+                        {
+                            LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
+                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+                        }
+                        catch { }
+                    }
                 }
-                else
+                else if (_power.PowerLineStatus == PowerLineStatus.Offline)
                 {
-                    LogoForm logo = new LogoForm(500, 1200, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                    PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                    if (PowerSchemeHelper.GetPowerActiveScheme() != _ecoPlan)
+                    {
+                        Thread.Sleep(2000);
+                        try
+                        {
+                            LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                        }
+                        catch { }
+                    }
                 }
-
-                this.actualChargeStatus = _power.BatteryChargeStatus;
             }
         }
     }
