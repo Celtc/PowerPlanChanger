@@ -17,22 +17,10 @@ public class LogoForm : PerPixelAlphaForm
 
         this._fadeTime = fadeTime;
         this._showTime = showTime;
-        this.DrawLogo();
-    }
-    public LogoForm(Bitmap logo)
-    {
-        this.TopMost = true;
-        this.ShowInTaskbar = false;
-        this.bitmap = logo;
-    }
 
-    //Draw on demand
-    public void Draw(int fadeTime, int showTime, double fps)
-    {
-        this._fps = fps;
-        this._fadeTime = fadeTime;
-        this._showTime = showTime;
-        this.DrawLogo();
+        var thread = new Thread(new ThreadStart(DrawLogo));
+        thread.IsBackground = true;
+        thread.Start();
     }
 
     //Le decimos a windows que lo dibuje
@@ -47,33 +35,52 @@ public class LogoForm : PerPixelAlphaForm
     }
 
     //Cargamos una imagen
-    private void DrawLogo()
+    public void DrawLogo()
     {
         //Carga
         try { this.SetBitmap(this.bitmap, 0); } catch {}
 
         //Establece posicion y Muestra
-        this.Show();
-        this.Top = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Height / 2);
-        this.Left = (Screen.PrimaryScreen.WorkingArea.Width / 2) - (this.Width / 2);
-
-        //Muestra con transaperencia
-        int interval = (int) ((double) (1 / _fps) * 1000);
-        int timer = 0;
-        while (timer <= this._fadeTime)
+        try
         {
-            this.SetBitmap(this.bitmap, (byte)(timer * 255 / this._fadeTime));
-            timer += interval;
-            Thread.Sleep(interval);
-        }
-        while (timer <= this._showTime)
-        {
-            timer += interval;
-            Thread.Sleep(interval);
-        }
+            this.Show();
+            this.Top = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Height / 2);
+            this.Left = (Screen.PrimaryScreen.WorkingArea.Width / 2) - (this.Width / 2);
 
-        //Esconde
-        this.Hide();
+            //Muestra con transaperencia
+            int interval = (int)((double)(1 / _fps) * 1000);
+            int timer = 0;
+            while (timer <= this._fadeTime)
+            {
+                this.SetBitmap(this.bitmap, (byte)(timer * 255 / this._fadeTime));
+                timer += interval;
+                Thread.Sleep(interval);
+            }
+            while (timer <= this._showTime)
+            {
+                timer += interval;
+                Thread.Sleep(interval);
+            }
+        }
+        catch
+        {
+            //Error
+        }
+        finally
+        {
+            this.Hide();
+            this.Dispose();
+            Thread.CurrentThread.Abort();
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && (bitmap != null))
+        {
+            bitmap.Dispose();
+        }
+        base.Dispose(disposing);
     }
 
     private double _fps;

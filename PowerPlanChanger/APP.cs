@@ -465,7 +465,7 @@ namespace PowerPlanChanger
             IntPtr hprog = NativeMethods.FindWindowEx(FindShellWindow() , IntPtr.Zero, "SysListView32", "FolderView");
             NativeMethods.SetWindowLong(this.Handle, GWL_HWNDPARENT, hprog);
 
-            //Carga los botones
+            //Carga los botones y logos
             LoadButtons();
 
             //Carga el Timer
