@@ -11,8 +11,8 @@ public class LogoForm : PerPixelAlphaForm
     public LogoForm(int fadeTime, int showTime, double fps, Bitmap logo)
     {
         this._fps = fps;
-        this.TopMost = true;
         this.ShowInTaskbar = false;
+        this.TopMost = true;
         this.bitmap = logo;
 
         this._fadeTime = fadeTime;
@@ -42,6 +42,8 @@ public class LogoForm : PerPixelAlphaForm
         //Establece posicion y Muestra
         try
         {
+            this.SetTopLevel(true);
+            this.TopMost = true;
             this.Show();
             this.Top = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Height / 2);
             this.Left = (Screen.PrimaryScreen.WorkingArea.Width / 2) - (this.Width / 2);

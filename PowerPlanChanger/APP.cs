@@ -518,7 +518,7 @@ namespace PowerPlanChanger
                 {
                     if (PowerSchemeHelper.GetPowerActiveScheme() != _maxPlan)
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1000);
                         try
                         {
                             LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
@@ -531,7 +531,7 @@ namespace PowerPlanChanger
                 {
                     if (PowerSchemeHelper.GetPowerActiveScheme() != _ecoPlan)
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(1000);
                         try
                         {
                             LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
