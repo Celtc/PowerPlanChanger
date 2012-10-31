@@ -19,7 +19,6 @@ public class LogoForm : PerPixelAlphaForm
         this._showTime = showTime;
 
         var thread = new Thread(new ThreadStart(DrawLogo));
-        thread.IsBackground = true;
         thread.Start();
     }
 

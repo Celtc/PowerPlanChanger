@@ -465,7 +465,7 @@ namespace PowerPlanChanger
             IntPtr hprog = NativeMethods.FindWindowEx(FindShellWindow() , IntPtr.Zero, "SysListView32", "FolderView");
             NativeMethods.SetWindowLong(this.Handle, GWL_HWNDPARENT, hprog);
 
-            //Carga los botones y logos
+            //Carga los botones
             LoadButtons();
 
             //Carga el Timer
@@ -492,16 +492,19 @@ namespace PowerPlanChanger
         
         private void BatteryChargeCheck()
         {
-            if ((int)(_power.BatteryLifePercent * 100) <= this._powerChangePoint)
+            if (_power.PowerLineStatus == PowerLineStatus.Offline)
             {
-                if (PowerSchemeHelper.GetPowerActiveScheme() != this._ecoPlan)
+                if ((int)(_power.BatteryLifePercent * 100) <= this._powerChangePoint)
                 {
-                    try
+                    if (PowerSchemeHelper.GetPowerActiveScheme() != this._ecoPlan)
                     {
-                        LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                        PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                        try
+                        {
+                            LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
+                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
             }
         }
