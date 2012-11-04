@@ -44,12 +44,14 @@
             this.comboBox_size = new System.Windows.Forms.ComboBox();
             this.checkBox_plugCheck = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.button_createEcoPlan = new System.Windows.Forms.Button();
+            this.button_createMaxPlan = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_saveOpt
             // 
             this.button_saveOpt.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button_saveOpt.Location = new System.Drawing.Point(94, 145);
+            this.button_saveOpt.Location = new System.Drawing.Point(121, 145);
             this.button_saveOpt.Name = "button_saveOpt";
             this.button_saveOpt.Size = new System.Drawing.Size(75, 23);
             this.button_saveOpt.TabIndex = 7;
@@ -132,7 +134,7 @@
             // button_cancelOpt
             // 
             this.button_cancelOpt.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button_cancelOpt.Location = new System.Drawing.Point(190, 145);
+            this.button_cancelOpt.Location = new System.Drawing.Point(217, 145);
             this.button_cancelOpt.Name = "button_cancelOpt";
             this.button_cancelOpt.Size = new System.Drawing.Size(75, 23);
             this.button_cancelOpt.TabIndex = 8;
@@ -152,7 +154,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(185, 13);
+            this.label6.Location = new System.Drawing.Point(215, 13);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(27, 13);
             this.label6.TabIndex = 10;
@@ -172,7 +174,7 @@
             "Bottom Right"});
             this.comboBox_position.Location = new System.Drawing.Point(62, 10);
             this.comboBox_position.Name = "comboBox_position";
-            this.comboBox_position.Size = new System.Drawing.Size(117, 21);
+            this.comboBox_position.Size = new System.Drawing.Size(147, 21);
             this.comboBox_position.TabIndex = 0;
             // 
             // comboBox_size
@@ -185,9 +187,9 @@
             "Medium",
             "Small",
             "XSmall"});
-            this.comboBox_size.Location = new System.Drawing.Point(218, 10);
+            this.comboBox_size.Location = new System.Drawing.Point(248, 10);
             this.comboBox_size.Name = "comboBox_size";
-            this.comboBox_size.Size = new System.Drawing.Size(119, 21);
+            this.comboBox_size.Size = new System.Drawing.Size(153, 21);
             this.comboBox_size.TabIndex = 1;
             // 
             // checkBox_plugCheck
@@ -204,15 +206,37 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(34, 117);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(287, 13);
+            this.label7.Size = new System.Drawing.Size(361, 13);
             this.label7.TabIndex = 6;
-            this.label7.Text = "Automatically change between plans when plug-in plug-out.";
+            this.label7.Text = "Automatically change between plans when plug-in plug-out the power cord.";
+            // 
+            // button_createEcoPlan
+            // 
+            this.button_createEcoPlan.Location = new System.Drawing.Point(345, 35);
+            this.button_createEcoPlan.Name = "button_createEcoPlan";
+            this.button_createEcoPlan.Size = new System.Drawing.Size(56, 23);
+            this.button_createEcoPlan.TabIndex = 11;
+            this.button_createEcoPlan.Text = "Create";
+            this.button_createEcoPlan.UseVisualStyleBackColor = true;
+            this.button_createEcoPlan.Click += new System.EventHandler(this.button_createEcoPlan_Click);
+            // 
+            // button_createMaxPlan
+            // 
+            this.button_createMaxPlan.Location = new System.Drawing.Point(345, 62);
+            this.button_createMaxPlan.Name = "button_createMaxPlan";
+            this.button_createMaxPlan.Size = new System.Drawing.Size(56, 23);
+            this.button_createMaxPlan.TabIndex = 12;
+            this.button_createMaxPlan.Text = "Create";
+            this.button_createMaxPlan.UseVisualStyleBackColor = true;
+            this.button_createMaxPlan.Click += new System.EventHandler(this.button_createMaxPlan_Click);
             // 
             // OptionsGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 179);
+            this.ClientSize = new System.Drawing.Size(413, 179);
+            this.Controls.Add(this.button_createMaxPlan);
+            this.Controls.Add(this.button_createEcoPlan);
             this.Controls.Add(this.checkBox_plugCheck);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.comboBox_size);
@@ -256,6 +280,8 @@
         private System.Windows.Forms.ComboBox comboBox_size;
         private System.Windows.Forms.CheckBox checkBox_plugCheck;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button_createEcoPlan;
+        private System.Windows.Forms.Button button_createMaxPlan;
     }
 }
 

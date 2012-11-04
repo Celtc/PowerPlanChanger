@@ -121,7 +121,6 @@
   <data name="Battery" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Battery.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="EnergyButtonPressed_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\EnergyButtonPressed_large.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -175,5 +174,12 @@
   </data>
   <data name="PerformanceButton_xsmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PerformanceButton_xsmall.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="performancePlan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\performancePlan.bin;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="saverPlan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\saverPlan.bin;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

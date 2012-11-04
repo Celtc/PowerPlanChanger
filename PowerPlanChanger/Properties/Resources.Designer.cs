@@ -192,5 +192,19 @@ namespace PowerPlanChanger.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static byte[] performancePlan {
+            get {
+                object obj = ResourceManager.GetObject("performancePlan", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] saverPlan {
+            get {
+                object obj = ResourceManager.GetObject("saverPlan", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

@@ -12,6 +12,13 @@ namespace PowerPlanChanger.Sources
         public Guid SchemeGuid;
         public object Tag;
 
+        public PowerPlanInfo(string friendlyName, Guid guid)
+        {
+            this._friendlyName = friendlyName;
+            this.SchemeGuid = guid;
+            this.Tag = null;
+        }
+
         public string FriendlyName
         {
             set { this._friendlyName = value; }
@@ -48,7 +55,7 @@ namespace PowerPlanChanger.Sources
                 if (schemaGuid != Guid.Empty)
                 {
                     schemaFriendlyName = PowrProfHelper.GetPowerSchemeFriendlyName(schemaGuid);
-                    ret.Add(schemaGuid, new PowerPlanInfo() { SchemeGuid = schemaGuid, _friendlyName = schemaFriendlyName });
+                    ret.Add(schemaGuid, new PowerPlanInfo(schemaFriendlyName, schemaGuid));
                 }
                 i++;
             } while (schemaGuid != Guid.Empty);
@@ -67,7 +74,7 @@ namespace PowerPlanChanger.Sources
                 if (schemaGuid != Guid.Empty)
                 {
                     schemaFriendlyName = PowrProfHelper.GetPowerSchemeFriendlyName(schemaGuid);
-                    ret.Add(new PowerPlanInfo() { SchemeGuid = schemaGuid, _friendlyName = schemaFriendlyName });
+                    ret.Add(new PowerPlanInfo(schemaFriendlyName, schemaGuid));
                 }
                 i++;
             } while (schemaGuid != Guid.Empty);
@@ -79,9 +86,24 @@ namespace PowerPlanChanger.Sources
             return PowrProfHelper.GetPowerActiveScheme();
         }
 
+        public static Guid ImportSchemeFile(string filename)
+        {
+            return PowrProfHelper.ImportPowerSchemeFile(filename);
+        }
+
+        public static string GetSchemeName(Guid schemeGuid)
+        {
+            return PowrProfHelper.GetPowerSchemeFriendlyName(schemeGuid);
+        }
+
+        public static bool DeleteScheme(Guid schemeGuid)
+        {
+            return PowerSchemeHelper.PowrProfHelper.DeletePowerScheme(schemeGuid);
+        }
+
         private class PowrProfHelper
         {
-            #region pinvoke
+            #region API
             private const UInt32 ERROR_SUCCESS = 0;
             private const UInt32 ERROR_MORE_DATA = 234;
             private const UInt32 ERROR_NO_MORE_ITEMS = 259;
@@ -155,6 +177,21 @@ namespace PowerPlanChanger.Sources
                 IntPtr UserRootPowerKey,
                 ref IntPtr ActivePolicyGuid
             );
+
+            [DllImport("PowrProf.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.U4)]
+            private static extern UInt32 PowerImportPowerScheme(
+                IntPtr RootPowerKey,
+                IntPtr ImportFileNamePath,
+                ref IntPtr DestinationSchemeGuid
+            );
+
+            [DllImport("PowrProf.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.U4)]
+            private static extern UInt32 PowerDeleteScheme(
+                IntPtr RootPowerKey,
+                ref Guid SchemeGuid
+            );
             #endregion
 
             public static Guid GetPowerSchemeGuid(UInt32 index)
@@ -224,6 +261,32 @@ namespace PowerPlanChanger.Sources
                     ret = (Guid)Marshal.PtrToStructure(buffer, typeof(Guid));
                 Marshal.FreeHGlobal(buffer);
                 return ret;
+            }
+
+            public static Guid ImportPowerSchemeFile(string filename)
+            {
+                Guid ret = Guid.Empty;
+                UInt32 res = 0;
+                IntPtr dstGuid = dstGuid = Marshal.AllocHGlobal((int)255);
+                IntPtr buffer = buffer = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(filename.ToCharArray(), 0);
+                res = PowerImportPowerScheme(IntPtr.Zero, buffer, ref dstGuid);
+                if (res == ERROR_SUCCESS)
+                    ret = (Guid)Marshal.PtrToStructure(dstGuid, typeof(Guid));
+                //else if (res == ERROR_FILE_NOT_FOUND)
+                //    ;//Archivo no encontrado
+                else
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+
+                return ret;
+            }
+
+            public static Boolean DeletePowerScheme(Guid schemeGuid)
+            {
+                UInt32 res = PowerDeleteScheme(IntPtr.Zero, ref schemeGuid);
+                if (res == ERROR_SUCCESS)
+                    return true;
+                else
+                    return false;
             }
         }
     }
