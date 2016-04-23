@@ -34,6 +34,12 @@ namespace PowerPlanChanger
             public Image PerformanceButtonPressed;
         }
 
+        public enum PlanMode
+        {
+            Performance,
+            Energy
+        }
+
         public enum Positions
         {
             TopLeft = 0,
@@ -409,19 +415,19 @@ namespace PowerPlanChanger
             try
             {
                 LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
-                PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+                SetPlan(_maxPlan);
             }
             catch { }
         }
 
         private void pictureBox_buttonPerformance_MouseDown(object sender, MouseEventArgs e)
         {
-            this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonPressed;
+
         }
 
         private void pictureBox_buttonPerformance_MouseUp(object sender, MouseEventArgs e)
         {
-            this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonNonPressed;
+
         }
 
         private void pictureBox_buttonEnergy_Click(object sender, EventArgs e)
@@ -429,19 +435,19 @@ namespace PowerPlanChanger
             try
             {
                 LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                SetPlan(_ecoPlan);
             }
             catch { }
         }
 
         private void pictureBox_buttonEnergy_MouseDown(object sender, MouseEventArgs e)
         {
-            this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonPressed;
+
         }
 
         private void pictureBox_buttonEnergy_MouseUp(object sender, MouseEventArgs e)
         {
-            this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonNonPressed;
+
         }
 
         //Form Loading
@@ -501,7 +507,7 @@ namespace PowerPlanChanger
                         try
                         {
                             LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                            SetPlan(_ecoPlan);
                         }
                         catch { }
                     }
@@ -522,7 +528,7 @@ namespace PowerPlanChanger
                         try
                         {
                             LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.PerformanceBattery);
-                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_maxPlan);
+                            SetPlan(_maxPlan);
                         }
                         catch { }
                     }
@@ -535,11 +541,45 @@ namespace PowerPlanChanger
                         try
                         {
                             LogoForm logo = new LogoForm(500, 1500, 20, global::PowerPlanChanger.Properties.Resources.EnergySaver);
-                            PowerPlanChanger.Sources.PowerSchemeHelper.SetPowerScheme(_ecoPlan);
+                            SetPlan(_ecoPlan);
                         }
                         catch { }
                     }
                 }
+            }
+        }
+
+        //Set plan
+        private void SetPlan(PlanMode planMode)
+        {
+            if (planMode == PlanMode.Performance)
+            {
+                SetPlan(_maxPlan);
+            }
+            else if (planMode == PlanMode.Energy)
+            {
+                SetPlan(_ecoPlan);
+            }
+        }
+
+        //Set plan
+        private void SetPlan(Guid plan)
+        {
+            // Change plan
+            if (!PowerSchemeHelper.SetPowerScheme(plan)) return;
+
+            // Update HUD
+            if (plan == _maxPlan)
+            {
+                // Update HUD
+                this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonPressed;
+                this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonNonPressed;
+            }
+            else if (plan == _ecoPlan)
+            {
+                // Update HUD
+                this.pictureBox_buttonEnergy.Image = this._buttonList[(int)this._buttonSize].EnergyButtonPressed;
+                this.pictureBox_buttonPerformance.Image = this._buttonList[(int)this._buttonSize].PerformanceButtonNonPressed;
             }
         }
     }
